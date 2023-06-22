@@ -8,6 +8,7 @@ export interface CocktailUseCases {
 }
 
 export let cocktailUseCases: CocktailUseCases
+
 export function InitServiceLocator (): JSX.Element | null {
   useEffect(() => {
     console.log('InitServiceLocator')
