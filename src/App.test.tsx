@@ -2,6 +2,10 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import App from './presentation/App'
 import paginateArray from './domain/use_case/paginateArray'
+import type CocktailRepository from './domain/repository/CocktailRepository'
+import Cocktail from './domain/model/Cocktail'
+import GetRandom from './domain/use_case/GetRandom'
+import type CacheRepository from './domain/repository/CacheRepository'
 
 test('renders learn react link', () => {
   render(<App />)
@@ -74,5 +78,61 @@ describe('paginateArray', () => {
         paginateArray(data, currentPage, itemsPerPage)
       }).toThrow('Page index is out of bounds.')
     })
+  })
+})
+
+describe('tests for GetRandom use case', () => {
+  it('should return a random cocktail', async () => {
+    const repository = jest.genMockFromModule<CocktailRepository>(
+      './domain/repository/CocktailRepository')
+    const cachedRepository = jest.genMockFromModule<CacheRepository>(
+      './domain/repository/CacheRepository')
+
+    const cocktail = new Cocktail('1', 'margarita')
+    repository.getRandomCocktail = jest.fn().mockReturnValue(Promise.resolve(cocktail))
+
+    const getRandom = GetRandom(repository, cachedRepository)
+    const result = await getRandom()
+
+    expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)
+    expect(result).toEqual(cocktail)
+  })
+
+  it('should return cached cocktail', async () => {
+    const repository = jest.genMockFromModule<CocktailRepository>(
+      './domain/repository/CocktailRepository')
+    const cachedRepository = jest.genMockFromModule<CacheRepository>(
+      './domain/repository/CacheRepository')
+
+    const cocktail = new Cocktail('1', 'margarita')
+    repository.getRandomCocktail = jest.fn().mockReturnValue(Promise.resolve({}))
+    cachedRepository.getCocktailFromCache = jest.fn().mockReturnValue(Promise.resolve(cocktail))
+
+    const getRandom = GetRandom(repository, cachedRepository)
+    const result = await getRandom()
+
+    expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)
+    expect(cachedRepository.getCocktailFromCache).toHaveBeenCalledTimes(1)
+    expect(result).toEqual(cocktail)
+  })
+  it('should return cached cocktail', async () => {
+    const repository = jest.genMockFromModule<CocktailRepository>(
+      './domain/repository/CocktailRepository')
+    const cachedRepository = jest.genMockFromModule<CacheRepository>(
+      './domain/repository/CacheRepository')
+
+    const cocktail = new Cocktail('1', 'margarita')
+    repository.getRandomCocktail =
+        jest.fn().mockReturnValue(Promise.reject(new Error('error')))
+    cachedRepository.getCocktailFromCache =
+        jest.fn().mockReturnValue(Promise.resolve(cocktail))
+
+    const getRandom = GetRandom(repository, cachedRepository)
+    const result = await getRandom()
+
+    expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)
+    expect(cachedRepository.getCocktailFromCache).toHaveBeenCalledTimes(1)
+    expect(cachedRepository.getCocktailFromCache).toThrow()
+    expect(result).toEqual(cocktail)
   })
 })

@@ -7,6 +7,7 @@ function App (): JSX.Element {
   const [cocktail, setCocktail] = React.useState<Cocktail>(
     new Cocktail('', '')
   )
+  const [theme, setTheme] = React.useState('light')
 
   useEffect(() => {
     cocktailUseCases.getRandom().then((value) => {
@@ -18,7 +19,18 @@ function App (): JSX.Element {
   }, [])
 
   return (
-    <h1>Name - {cocktail.name}</h1>
+      <div className={theme}>
+        <h1>Name - {cocktail.name}</h1>
+        <div className={'themeSwitcher'} onClick={
+            () => {
+              if (theme === 'light') {
+                setTheme('dark')
+              } else {
+                setTheme('light')
+              }
+            }
+        }></div>
+      </div>
   )
 }
 

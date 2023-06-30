@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.themeSwitcher{
+  height: 4vw;
+  width: 4vw;
+  background-color: cadetblue;
+}
+
+.light>h1{
+  color: red;
+}
+.dark>h1{
+  color: green;
+}
