@@ -3,14 +3,18 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './presentation/App'
 import { InitServiceLocator } from './di/ServiceLocator'
+import { Provider } from 'react-redux'
+import { store } from './presentation/redux/reduxStore'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 )
 root.render(
   <React.StrictMode>
-      <InitServiceLocator/>
-      <App />
+      <Provider store={store}>
+        <InitServiceLocator/>
+        <App />
+      </Provider>
   </React.StrictMode>
 )
 

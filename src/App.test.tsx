@@ -91,7 +91,7 @@ describe('tests for GetRandom use case', () => {
     const cocktail = new Cocktail('1', 'margarita')
     repository.getRandomCocktail = jest.fn().mockReturnValue(Promise.resolve(cocktail))
 
-    const getRandom = GetRandom(repository, cachedRepository)
+    const getRandom = GetRandom(repository)
     const result = await getRandom()
 
     expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)
@@ -108,7 +108,7 @@ describe('tests for GetRandom use case', () => {
     repository.getRandomCocktail = jest.fn().mockReturnValue(Promise.resolve({}))
     cachedRepository.getCocktailFromCache = jest.fn().mockReturnValue(Promise.resolve(cocktail))
 
-    const getRandom = GetRandom(repository, cachedRepository)
+    const getRandom = GetRandom(repository)
     const result = await getRandom()
 
     expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)
@@ -127,7 +127,7 @@ describe('tests for GetRandom use case', () => {
     cachedRepository.getCocktailFromCache =
         jest.fn().mockReturnValue(Promise.resolve(cocktail))
 
-    const getRandom = GetRandom(repository, cachedRepository)
+    const getRandom = GetRandom(repository)
     const result = await getRandom()
 
     expect(repository.getRandomCocktail).toHaveBeenCalledTimes(1)

@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react'
 import './App.css'
-import Cocktail from '../domain/model/Cocktail'
-import { cocktailUseCases } from '../di/ServiceLocator'
+import { useDispatch, useSelector } from 'react-redux'
+import { type Store } from './redux/types'
+import { getRandomCocktail } from './redux/asyncActions'
 
 function App (): JSX.Element {
-  const [cocktail, setCocktail] = React.useState<Cocktail>(
-    new Cocktail('', '')
-  )
   const [theme, setTheme] = React.useState('light')
 
+  const dispatch = useDispatch<any>()
+  const name = useSelector((state: Store) => state.rootReducer.name)
+
   useEffect(() => {
-    cocktailUseCases.getRandom().then((value) => {
-      console.log(value)
-      setCocktail(value)
-    }).catch((reason) => {
-      console.log(reason)
-    })
+    dispatch(getRandomCocktail())
   }, [])
+
+  useEffect(() => {
+    console.log('name' + name)
+  }, [name])
 
   return (
       <div className={theme}>
-        <h1>Name - {cocktail.name}</h1>
+        <h1>Name - {name}</h1>
         <div className={'themeSwitcher'} onClick={
             () => {
               if (theme === 'light') {
